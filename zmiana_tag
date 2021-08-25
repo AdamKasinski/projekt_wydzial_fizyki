@@ -1,0 +1,40 @@
+import pandas as pd
+
+corr = pd.read_csv('C:/Users/Adam/Desktop/ZX_18_CAT.csv',sep=',')
+zs = corr.index[corr['key_resp_4.keys'] == 'z']
+zs = [i*2-1 for i in zs]
+print(zs)
+lines = []
+a = 0
+with open('C:/Users/Adam/Desktop/ZX_18_CAT.tag','r', encoding = 'utf-8') as f:
+    text = f.readlines()
+    for i,line in enumerate(text):
+        if '"litera"' in line:
+            lit = text[i+1][12]
+            lines.append([line.index('litera'),lit])
+print(lines)        
+for i in zs:
+    if lines[i][1] == 'X' and lines[i-1][1] == "A":
+        lines[i][1] = 'X_corr'
+    elif lines[i][1] == 'X':
+        lines[i][1] = 'X_wrong'
+        print(i)
+    else:
+        lines[i][1] = 'wrong'
+        print(i)
+
+for (indeks,value) in enumerate(lines):
+    if value[1] == "X" and lines[indeks-1][1] == 'A':
+        value[1] = 'wrong'
+
+b = 0
+with open('C:/Users/Adam/Desktop/poprawiony_CAT.tag','w', encoding = 'utf-8') as f:
+    #text = f.readlines()
+    for i,line in enumerate(text):
+        if '"litera"' in line:
+            ln = line[0:lines[b][0]]+lines[b][1]+line[lines[b][0]+6:-1]+'\n'
+            #print(ln)
+            f.writelines(ln)
+            b+=1
+        else:
+            f.writelines(line)
